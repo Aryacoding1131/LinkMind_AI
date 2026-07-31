@@ -1,0 +1,104 @@
+import spacy
+from collections import Counter
+
+# Load spaCy model once
+nlp = spacy.load("en_core_web_sm")
+
+
+def process_text(text):
+    """
+    Process webpage text using spaCy.
+    Returns cleaned text, keywords and entities.
+    """
+
+    doc = nlp(text)
+
+    clean_words = []
+
+    keywords = []
+
+    entities = []
+
+    # -------------------------
+    # Clean Tokens
+    # -------------------------
+
+    for token in doc:
+
+        if (
+            not token.is_stop
+            and not token.is_punct
+            and not token.like_num
+            and token.is_alpha
+        ):
+
+            lemma = token.lemma_.lower()
+
+            clean_words.append(lemma)
+
+    clean_text = " ".join(clean_words)
+
+    # -------------------------
+    # Keyword Extraction
+    # -------------------------
+
+    frequency = Counter(clean_words)
+
+    keywords = [
+        word
+        for word, count in frequency.most_common(20)
+    ]
+
+    # -------------------------
+    # Named Entity Recognition
+    # -------------------------
+
+    for ent in doc.ents:
+
+        entities.append({
+
+            "text": ent.text,
+
+            "label": ent.label_
+
+        })
+
+    # Remove duplicate entities
+
+    unique_entities = []
+
+    seen = set()
+
+    for item in entities:
+
+        key = (item["text"], item["label"])
+
+        if key not in seen:
+
+            unique_entities.append(item)
+
+            seen.add(key)
+
+    # -------------------------
+    # Reading Time
+    # -------------------------
+
+    word_count = len(clean_words)
+
+    reading_time = max(
+        1,
+        round(word_count / 200)
+    )
+
+    return {
+
+        "clean_text": clean_text,
+
+        "keywords": keywords,
+
+        "entities": unique_entities,
+
+        "word_count": word_count,
+
+        "reading_time": reading_time
+    }
