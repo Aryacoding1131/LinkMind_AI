@@ -7,14 +7,16 @@
 
 2. we use streamlit for creating UI, also bcrypt lib is used in case of authentication of passwords and user mail or email id.
 
-3. It is also equipped with Groq LLM for providing recommended suggestions. 
+3. It is also equipped with Groq LLM for providing recommended suggestions.
 
+4. Build a docker image as attached in file slight change is made in the mongodb, database name and ollama model they should be available during the runtime
 
 ###### popular commands in cmd 
 
 1. pip install -r requirements.txt
 2. python -m venv venv
 3. streamlit run <app>.py
+4. docker run -p 8501:8501 -e GROQ_API_KEY="<API Key name>" bookmark-ai
 
 ##### dependencies needed
 
